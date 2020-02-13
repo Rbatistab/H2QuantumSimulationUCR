@@ -1,7 +1,10 @@
 This is a space for placing a register on the work we do
 
-10/02/20
+12/02/20
+Russell:
+-Try to figure out why we can't find Mauricio's and Armando's gihub profiles to add into the repository
 
+10/02/20
 Russell:
 - Create a new github repository only for the H2 simulation
 - Correct the names of the folders in the old OpenfermionTests1 and leave it for code testing only
