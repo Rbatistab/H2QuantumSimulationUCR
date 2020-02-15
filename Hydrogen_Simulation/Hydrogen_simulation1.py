@@ -65,6 +65,9 @@ print("\n**The molecular hamiltonian's interaction constant, has been manually s
 H2_molecular_hamiltonian = h2_molecule.get_molecular_hamiltonian()
 H2_molecular_hamiltonian.constant = 0
 
+
+# Mapping to qubits
+
 from openfermion.transforms import get_fermion_operator, bravyi_kitaev
 
 h2_qubit_hamiltonian = bravyi_kitaev(get_fermion_operator(H2_molecular_hamiltonian))
@@ -73,12 +76,53 @@ print("\nThe latter Hamiltoian mapped to a qubit Hamiltonian in through the Brav
 print(h2_qubit_hamiltonian)
 
 
+# Circuit generation:
+
+import cirq
+import openfermioncirq as ofc
+
+qubits = cirq.LineQubit.range(4)
+circuit = cirq.Circuit(
+        ofc.simulate_trotter(
+            qubits,
+            H2_molecular_hamiltonian,
+            time = 1.0,
+            n_steps = 1,
+            order = 0,
+            algorithm = ofc.trotter.LOW_RANK,
+            omit_final_swaps = True
+        )
+)
+
+cirq.merge_single_qubit_gates_into_phased_x_z(circuit)
+
+print("\nThe corresponding quantum circuit, obtained with cirq:\n")
+circuit_cirq_string = circuit.to_text_diagram(use_unicode_characters = True)
+circuit_array = circuit_cirq_string.split('\n')
+
+for x in range(4):
+    inf_lim = 0 + x*125
+    sup_lim = inf_lim + 125
+    if sup_lim > 514:
+        sup_lim = 514
+    for y in range(len(circuit_array)): 
+        if x != 0:
+            if 0 == y%2:
+                print( str(y) + ": ", end = '' )
+            else:
+                print(3*' ', end = '')
+        print(circuit_array[y][inf_lim:sup_lim])
+    print("\n\n")
+
+
+
+
 # Optional, it may be done with a psi4 over the h2 molecule
 
 #Let's reset the original H2_molecular_hamiltonian to it's original form and run psi_4:
 #H2_molecular_hamiltonian.constant = None
 
-
+'''
 from openfermionpsi4 import run_psi4
 
 h2_molecule_psi4 = run_psi4(h2_molecule,
@@ -96,4 +140,4 @@ h2_qubit_hamiltonian = bravyi_kitaev(get_fermion_operator(h2_molecule_psi4.get_m
 print("\nThe latter Hamiltoian mapped to a qubit Hamiltonian in through the Bravyi-kitaev transformation is:\n ")
 print(h2_qubit_hamiltonian)
 
-
+'''

@@ -1,5 +1,9 @@
 This is a space for placing a register on the work we do
 
+14/02/20:
+Russell:
+- Try to fix code and output to obtain the circuit for simulating H2 with openfermion, with cirq plugin, no psi4 involved
+
 12/02/20
 Russell:
 -Try to figure out why we can't find Mauricio's and Armando's gihub profiles to add into the repository
