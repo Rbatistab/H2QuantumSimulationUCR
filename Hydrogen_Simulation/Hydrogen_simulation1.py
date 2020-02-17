@@ -117,12 +117,11 @@ for x in range(4):
 
 
 
-# Optional, it may be done with a psi4 over the h2 molecule
+# Optional, it may be done with a psi4 over the h2 molecule:
 
 #Let's reset the original H2_molecular_hamiltonian to it's original form and run psi_4:
-#H2_molecular_hamiltonian.constant = None
+H2_molecular_hamiltonian.constant = None
 
-'''
 from openfermionpsi4 import run_psi4
 
 h2_molecule_psi4 = run_psi4(h2_molecule,
@@ -135,9 +134,44 @@ h2_molecule_psi4 = run_psi4(h2_molecule,
 # Mapping to qubits by Bravyi-Kitaev for the new form of the hamiltonian
 
 print("\n\nNow let's make a psi_4 integral generation and re-map to qubits:\n")
-h2_qubit_hamiltonian = bravyi_kitaev(get_fermion_operator(h2_molecule_psi4.get_molecular_hamiltonian() ))
+h2_qubit_hamiltonian_psi4 = bravyi_kitaev(get_fermion_operator(h2_molecule_psi4.get_molecular_hamiltonian() ))
 
 print("\nThe latter Hamiltoian mapped to a qubit Hamiltonian in through the Bravyi-kitaev transformation is:\n ")
-print(h2_qubit_hamiltonian)
+print(h2_qubit_hamiltonian_psi4)
 
-'''
+# circuit generation with psi4
+
+qubits_psi4 = cirq.LineQubit.range(4)
+circuit_psi4 = cirq.Circuit(
+        ofc.simulate_trotter(
+            qubits,
+            H2_molecular_hamiltonian,
+            time = 1.0,
+            n_steps = 1,
+            order = 0,
+            algorithm = ofc.trotter.LOW_RANK,
+            omit_final_swaps = True
+        )
+)
+
+cirq.merge_single_qubit_gates_into_phased_x_z(circuit)
+
+print("\nThe corresponding quantum circuit with psi4, obtained with cirq:\n")
+circuit_cirq_string_psi4 = circuit_psi4.to_text_diagram(use_unicode_characters = True)
+circuit_array_psi4 = circuit_cirq_string.split('\n')
+
+for x in range(4):
+    inf_lim = 0 + x*125
+    sup_lim = inf_lim + 125
+    if sup_lim > 514:
+        sup_lim = 514
+    for y in range(len(circuit_array_psi4)): 
+        if x != 0:
+            if 0 == y%2:
+                print( str(y) + ": ", end = '' )
+            else:
+                print(3*' ', end = '')
+        print(circuit_array_psi4[y][inf_lim:sup_lim])
+    print("\n\n")
+
+

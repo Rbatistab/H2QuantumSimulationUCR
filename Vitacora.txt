@@ -1,4 +1,8 @@
 This is a space for placing a register on the work we do
+17/02/20:
+Russell:
+- Add psi4 to Hydrogen_simulation1.py for comparing purposes
+- Study on Qiskit
 
 14/02/20:
 Russell:
