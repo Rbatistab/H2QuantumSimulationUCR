@@ -19,5 +19,10 @@ Russell:
 
 
 Armando:
+24-01/02/20
+- Estudiar capitulo 4.1 del libro Qiskit
+
+17-23/02/20
+- Estudiar capitulo 4.1 del libro de Qiskit
 
 Mauricio:
